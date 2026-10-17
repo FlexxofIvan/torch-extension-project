@@ -1,0 +1,72 @@
+# ========================
+# Python
+# ========================
+
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# Python test caches
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
+
+# Linting and typing
+.ruff_cache/
+.mypy_cache/
+.pyright/
+
+# ========================
+# C++ / CMake
+# ========================
+
+CMakeFiles/
+CMakeCache.txt
+cmake-build-*/
+compile_commands.json
+
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+# ========================
+# IDE
+# ========================
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ========================
+# OS
+# ========================
+
+.DS_Store
+Thumbs.db
+
+# ========================
+# Temporary files
+# ========================
+
+*.log
+*.tmp
+*.bak
