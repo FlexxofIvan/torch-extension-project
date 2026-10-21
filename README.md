@@ -71,36 +71,6 @@ cp -r tests "$test_dir/tests"
 (cd "$test_dir" && /tmp/fse-test/bin/python -m pytest -q tests)
 ```
 
-## Profiling
-
-With the package installed in `.venv`, run from the project directory:
-
-```bash
-.venv/bin/python -m cProfile -o /tmp/fse-leaky-relu.prof tools/profile_op.py
-.venv/bin/python -c 'import pstats; pstats.Stats("/tmp/fse-leaky-relu.prof").strip_dirs().sort_stats("cumulative").print_stats("run_calls|leaky_relu")'
-```
-
-The script creates a contiguous CPU `float32` tensor with 10,000,000
-elements spanning -5 to 5, performs one warm-up call, then runs 20 calls
-with one PyTorch thread. Each call allocates a new output tensor.
-
-Measured on 2026-10-21, Linux x86_64, AMD Ryzen 5 5600H,
-Python 3.11.14, PyTorch 2.14.1+cu130 (CPU tensors):
-
-```text
-ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-     1    0.065    0.065    0.860    0.860 profile_op.py:10(run_calls)
-    21    0.842    0.040    0.842    0.040 {built-in method fse_ops._C.leaky_relu}
-```
-
-The 20-call loop took 0.860 seconds cumulatively, about 43 ms per call,
-including output allocation and release. Its interval excludes imports,
-input creation, and warm-up. The extension row includes the warm-up,
-hence 21 calls. These are local profiling results, not a comparison
-against PyTorch's built-in operation; timings vary with the environment.
-`cProfile` reports the extension call as a whole, without a breakdown
-of its internal C++ work.
-
 ## Docker
 
 To be added.
