@@ -13,5 +13,6 @@ test:
 	$(PYTHON) -m pytest -q
 
 clean:
-	rm -rf dist build __pycache__
-	find src tests -type d -name __pycache__ -prune -exec rm -rf {} +
+	rm -rf dist build
+	find . -type d \( -name .git -o -name .venv -o -name venv -o -name env \) -prune -o \
+		-type d -name __pycache__ -prune -exec rm -rf {} +
