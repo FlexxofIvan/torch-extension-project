@@ -18,11 +18,15 @@ def test_output_dtype():
     assert leaky_relu(x).dtype == torch.float32
 
 
-@pytest.mark.parametrize("batched", [False, True], ids=["normal", "batch-four"])
+@pytest.mark.parametrize("batched", [False, True], ids=["negative-view", "batch-four"])
 def test_exact_values(batched):
     x = torch.tensor([-3.25, -0.5, 0.0, 0.25, 2.75], dtype=torch.float32)
     if batched:
         x = x.repeat(4, 1)
+    else:
+        # Keep the logical values, but store their negation with a lazy negative bit.
+        x = torch._neg_view(-x)
+        assert x.is_neg()
     expected = torch.where(x > 0, x, 0.1 * x)
     assert torch.equal(leaky_relu(x), expected)
 
