@@ -7,7 +7,7 @@ torch::Tensor leaky_relu_cpu(const torch::Tensor& x) {
     TORCH_CHECK(x.layout() == torch::kStrided,
                 "leaky_relu expects a strided tensor");
 
-    auto flat = x.reshape({-1});
+    auto flat = x.resolve_neg().reshape({-1});
     auto result = torch::empty_like(flat);
 
     auto input = flat.accessor<float, 1>();
