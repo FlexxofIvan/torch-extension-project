@@ -17,7 +17,7 @@ The project includes:
 
 ## Requirements
 
-- Python 3.11
+- Python 3.11 or newer
 - C++20
 - PyTorch (CPU)
 - C++ compiler
@@ -26,7 +26,7 @@ The project includes:
 
 ## Installation
 
-From the project directory, using Python 3.11 and a C++ compiler:
+From the project directory, using Python 3.11 or newer and a C++ compiler:
 
 ```bash
 python3 -m venv /tmp/fse-build
@@ -71,6 +71,35 @@ cp -r tests "$test_dir/tests"
 (cd "$test_dir" && /tmp/fse-test/bin/python -m pytest -q tests)
 ```
 
+## Makefile
+
+The targets `wheel`, `install`, `test`, and `clean` build the wheel,
+install it, run pytest, and remove build outputs and project Python caches.
+Select the interpreter with `PYTHON`, for example:
+
+```bash
+make wheel PYTHON=/tmp/fse-build/bin/python
+make install PYTHON=/tmp/fse-test/bin/python
+make test PYTHON=/tmp/fse-test/bin/python
+make clean
+```
+
+Create the environments and install their dependencies as described above.
+`clean` preserves `.git`, `.venv`, `venv`, and `env` directories.
+
+## Smoke test
+
+```bash
+./tools/smoke.sh
+```
+
+Run on Linux with Python 3.11 or newer, venv support, and a C++ compiler.
+The script rebuilds the wheels in `dist/`, verifies the Linux platform tag
+with `grep`, installs the wheel with the same CPU torch version into a
+fresh test environment, and checks the operation outside the source tree.
+It prints `OK` only after every step succeeds and removes its temporary
+environments on exit.
+
 ## Profiling
 
 With the package installed in `.venv`, run from the project directory:
@@ -103,7 +132,25 @@ of its internal C++ work.
 
 ## Docker
 
-To be added.
+From the project directory:
+
+```bash
+docker build -t fse-ops:0.1 .
+docker run --rm fse-ops:0.1
+```
+
+The builder compiles the wheel from source. The final stage installs the
+same CPU torch version and the wheel, then runs pytest against `/opt/tests`
+without copying the source checkout or the builder's compiler.
+
+The default base is `ubuntu:24.04`, the base used by the local course
+sandbox Dockerfiles. `final_project.html` does not specify the exact lab
+image tag. If the course provides a prebuilt lab image, select it for
+both stages with:
+
+```bash
+docker build --build-arg COURSE_IMAGE=<course-image> -t fse-ops:0.1 .
+```
 
 ## Authors
 
